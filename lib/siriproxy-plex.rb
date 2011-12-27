@@ -39,34 +39,34 @@ class SiriProxy::Plugin::Plex < SiriProxy::Plugin
     @plex_library = PlexLibrary.new(@host, @port, @tv_index, @player)
   end
 
-  listen_for /on deck/i do
+  listen_for /sur le deck/i do
     ondeck_shows = @plex_library.all_ondeck()
     if(!ondeck_shows.empty?)
-       say "On Deck shows are:"
+       say "Les programmes sur le deck sont:"
        ondeck_shows.each do |singleshow|
          say "#{singleshow.gptitle}, #{singleshow.title}"
        end 
-       response = ask "Which show would you like to watch?"
+       response = ask "Quel programme voulez vous regarder ?"
        show = @plex_library.find_ondeck_show(response)
        if(show != nil)
          @plex_library.play_media(show.key)
-         say "Playing \"#{show.gptitle}\""
+         say "Lancement de \"#{show.gptitle}\""
        else
-         say "Sorry I couldn't find #{response}in the ondeck queue"
+         say "Désolé, je ne trouve pas #{response} dans votre Deck"
        end 
     else
-      say "Sorry I couldn't find anything in your onDeck queue"
+      say "Désolé, je n'ai rien trouvé dans votre Deck"
     end 
     request_completed
   end 
 
   
-  listen_for /(play|playing) (the)? latest(.+) of(.+)/i do |command, misc, some, show|
+  listen_for /(lance|lancement) (du)? dernier(.+) de(.+)/i do |command, misc, some, show|
     play_latest_episode_of(show)
     request_completed
   end
   
-  listen_for /(play|playing)(.+)/i do |command, show_title|
+  listen_for /(lance|lancement)(.+)/i do |command, show_title|
 
     season_index = 1
     show = @plex_library.find_show(show_title)
@@ -83,7 +83,7 @@ class SiriProxy::Plugin::Plex < SiriProxy::Plugin
     request_completed      
   end
   
-  listen_for /(play|playing) (.+)\sepisode (.+)/i do |command, first_match, second_match|
+  listen_for /(lance|lancement) (.+)\sépisode (.+)/i do |command, first_match, second_match|
     
     show_title = first_match
     
@@ -126,11 +126,11 @@ class SiriProxy::Plugin::Plex < SiriProxy::Plugin
       
       number = -1
       
-      if(response =~ /([0-9]+\s*|one|two|three|four|five|six|seven|eight|nine|ten)/i)
+      if(response =~ /([0-9]+\s*|un|deux|trois|quatre|cinq|six|sept|huit|neuf|dix)/i)
         number = $1
         break
       else
-        question = "I didn't get that, please state a number"
+        question = "Je n'ai pas compris, donnez moi un chiffre."
       end
     end
     
@@ -157,11 +157,11 @@ class SiriProxy::Plugin::Plex < SiriProxy::Plugin
   end
   
   def ask_for_season
-    ask_for_number("Which season?")
+    ask_for_number("Quelle saison?")
   end
   
   def ask_for_episode
-    ask_for_number("Which episode?")
+    ask_for_number("Quel épisode?")
   end
   
   def play_episode(show, episode_index, season_index = 1)
@@ -171,7 +171,7 @@ class SiriProxy::Plugin::Plex < SiriProxy::Plugin
       
       if(episode)
         @plex_library.play_media(episode.key)
-        say "Playing \"#{episode.title}\""
+        say "Lancement \"#{episode.title}\""
       else
         episode_not_found
       end
@@ -181,15 +181,15 @@ class SiriProxy::Plugin::Plex < SiriProxy::Plugin
   end
   
   def show_not_found
-    say "I'm sorry but I couldn't find that TV show"
+    say "Désolé, je ne trouve pas cette série"
   end
   
   def episode_not_found
-    say "I'm sorry but I couldn't find the episode you asked for"
+    say "Désolé, je ne trouve pas cet épisode"
   end
   
   def map_siri_numbers_to_int(number)
-    ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"].index(number.downcase)
+    ["0", "un", "deux", "trois", "quatre", "cinq", "six", "sept", "huit", "neuf", "dix"].index(number.downcase)
   end
   
   def play_latest_episode_of(show_title)
@@ -199,7 +199,7 @@ class SiriProxy::Plugin::Plex < SiriProxy::Plugin
 
     if(episode != nil)
       @plex_library.play_media(episode.key)
-      say "Playing \"#{episode.title}\""
+      say "Lancement \"#{episode.title}\""
     else
       episode_not_found
     end
