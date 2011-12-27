@@ -52,10 +52,10 @@ class SiriProxy::Plugin::Plex < SiriProxy::Plugin
          @plex_library.play_media(show.key)
          say "Lancement de \"#{show.gptitle}\""
        else
-         say "Désolé, je ne trouve pas #{response} dans votre Deck"
+         say "Desole, je ne trouve pas #{response} dans votre Deck"
        end 
     else
-      say "Désolé, je n'ai rien trouvé dans votre Deck"
+      say "Desole, je n'ai rien trouve dans votre Deck"
     end 
     request_completed
   end 
@@ -83,7 +83,7 @@ class SiriProxy::Plugin::Plex < SiriProxy::Plugin
     request_completed      
   end
   
-  listen_for /(lance|lancement) (.+)\sépisode (.+)/i do |command, first_match, second_match|
+  listen_for /(lance|lancement) (.+)\sepisode (.+)/i do |command, first_match, second_match|
     
     show_title = first_match
     
@@ -161,7 +161,7 @@ class SiriProxy::Plugin::Plex < SiriProxy::Plugin
   end
   
   def ask_for_episode
-    ask_for_number("Quel épisode?")
+    ask_for_number("Quel episode?")
   end
   
   def play_episode(show, episode_index, season_index = 1)
@@ -181,11 +181,11 @@ class SiriProxy::Plugin::Plex < SiriProxy::Plugin
   end
   
   def show_not_found
-    say "Désolé, je ne trouve pas cette série"
+    say "Desole, je ne trouve pas cette serie"
   end
   
   def episode_not_found
-    say "Désolé, je ne trouve pas cet épisode"
+    say "Desole, je ne trouve pas cet episode"
   end
   
   def map_siri_numbers_to_int(number)
